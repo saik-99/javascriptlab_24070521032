@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Form Validation Case Study</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        /* Validation Styles */
+        input.error {
+            border-color: #e74c3c;
+        }
+
+        input.success {
+            border-color: #2ecc71;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none; /* Hidden by default */
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input {
+            margin-right: 0.5rem;
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sign Up</h2>
+    <form id="signupForm" novalidate>
+        
+        <!-- First Name -->
+        <div class="form-group">
+            <label for="firstName">First Name <span style="color:red">*</span></label>
+            <input type="text" id="firstName" name="firstName" placeholder="John">
+            <small class="error-message">First name is required.</small>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+            <label for="lastName">Last Name <span style="color:red">*</span></label>
+            <input type="text" id="lastName" name="lastName" placeholder="Doe">
+            <small class="error-message">Last name is required.</small>
+        </div>
+
+        <!-- Birthday -->
+        <div class="form-group">
+            <label for="birthday">Birthday <span style="color:red">*</span></label>
+            <input type="date" id="birthday" name="birthday">
+            <small class="error-message">Birthday is required.</small>
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+            <label for="username">Username <span style="color:red">*</span></label>
+            <input type="text" id="username" name="username" placeholder="johndoe123">
+            <small class="error-message">Username is required (min 3 chars).</small>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">Email <span style="color:red">*</span></label>
+            <input type="email" id="email" name="email" placeholder="john@example.com">
+            <small class="error-message">Please enter a valid email address.</small>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            <label for="password">Password <span style="color:red">*</span></label>
+            <input type="password" id="password" name="password" placeholder="********">
+            <small class="error-message">Password must be at least 6 characters.</small>
+        </div>
+
+        <!-- Re-Password -->
+        <div class="form-group">
+            <label for="rePassword">Re-enter Password <span style="color:red">*</span></label>
+            <input type="password" id="rePassword" name="rePassword" placeholder="********">
+            <small class="error-message">Passwords do not match.</small>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="checkbox-group">
+            <input type="checkbox" id="terms" name="terms">
+            <label for="terms">I agree to the Terms and Conditions <span style="color:red">*</span></label>
+        </div>
+        <small class="error-message" id="termsError">You must agree to the terms.</small>
+
+        <button type="submit">Sign Up</button>
+    </form>
+</div>
+
+<script>
+    // 1. Select DOM Elements
+    const form = document.getElementById('signupForm');
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const birthday = document.getElementById('birthday');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const rePassword = document.getElementById('rePassword');
+    const terms = document.getElementById('terms');
+    const termsError = document.getElementById('termsError');
+
+    // 2. Helper Functions for Validation UI
+    function showError(input, messageElement) {
+        input.classList.add('error');
+        input.classList.remove('success');
+        messageElement.style.display = 'block';
+    }
+
+    function showSuccess(input, messageElement) {
+        input.classList.remove('error');
+        input.classList.add('success');
+        messageElement.style.display = 'none';
+    }
+
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    // 3. Event Listeners for Real-time Feedback (Change/Input events)
+    
+    // Validate on blur (when user leaves the field) or input
+    const validateOnBlur = (input, validatorFn, errorElement) => {
+        input.addEventListener('blur', () => {
+            if (!validatorFn(input.value)) {
+                showError(input, errorElement);
+            } else {
+                showSuccess(input, errorElement);
+            }
+        });
+        
+        // Optional: Clear error as soon as user starts typing
+        input.addEventListener('input', () => {
+            if (input.classList.contains('error')) {
+                input.classList.remove('error');
+                errorElement.style.display = 'none';
+                input.classList.add('success'); // Immediate success visual
+            }
+        });
+    };
+
+    // Apply validation to text fields
+    validateOnBlur(firstName, (val) => val.trim() !== '', firstName.nextElementSibling);
+    validateOnBlur(lastName, (val) => val.trim() !== '', lastName.nextElementSibling);
+    validateOnBlur(birthday, (val) => val !== '', birthday.nextElementSibling);
+    
+    validateOnBlur(username, (val) => val.trim().length >= 3, username.nextElementSibling);
+    
+    validateOnBlur(email, (val) => isValidEmail(val), email.nextElementSibling);
+    
+    validateOnBlur(password, (val) => val.length >= 6, password.nextElementSibling);
+
+    // Special case for Re-Password (needs to check Password field too)
+    rePassword.addEventListener('blur', () => {
+        if (password.value !== rePassword.value || rePassword.value === '') {
+            showError(rePassword, rePassword.nextElementSibling);
+        } else {
+            showSuccess(rePassword, rePassword.nextElementSibling);
+        }
+    });
+    
+    // Re-validate rePassword if password changes
+    password.addEventListener('input', () => {
+        if (rePassword.value !== '') {
+            if (password.value !== rePassword.value) {
+                showError(rePassword, rePassword.nextElementSibling);
+            } else {
+                showSuccess(rePassword, rePassword.nextElementSibling);
+            }
+        }
+    });
+
+    // Terms Checkbox Validation
+    terms.addEventListener('change', () => {
+        if (terms.checked) {
+            termsError.style.display = 'none';
+            terms.style.borderColor = '#2ecc71';
+        } else {
+            termsError.style.display = 'block';
+            terms.style.borderColor = '#e74c3c';
+        }
+    });
+
+    // 4. Form Submit Event Handling
+    form.addEventListener('submit', (e) => {
+        e.preventDefault(); // Stop form from submitting to server immediately
+
+        let isFormValid = true;
+
+        // Helper to check and set state
+        const checkField = (input, validator, errorEl) => {
+            if (!validator(input.value)) {
+                showError(input, errorEl);
+                isFormValid = false;
+            } else {
+                showSuccess(input, errorEl);
+            }
+        };
+
+        // Run all validations
+        checkField(firstName, val => val.trim() !== '', firstName.nextElementSibling);
+        checkField(lastName, val => val.trim() !== '', lastName.nextElementSibling);
+        checkField(birthday, val => val !== '', birthday.nextElementSibling);
+        checkField(username, val => val.trim().length >= 3, username.nextElementSibling);
+        checkField(email, val => isValidEmail(val), email.nextElementSibling);
+        checkField(password, val => val.length >= 6, password.nextElementSibling);
+        
+        // Re-password check
+        if (password.value !== rePassword.value || rePassword.value === '') {
+            showError(rePassword, rePassword.nextElementSibling);
+            isFormValid = false;
+        } else {
+            showSuccess(rePassword, rePassword.nextElementSibling);
+        }
+
+        // Terms check
+        if (!terms.checked) {
+            termsError.style.display = 'block';
+            terms.style.borderColor = '#e74c3c';
+            isFormValid = false;
+        } else {
+            termsError.style.display = 'none';
+            terms.style.borderColor = '#2ecc71';
+        }
+
+        // Final Result
+        if (isFormValid) {
+            // In a real app, you would submit the data here
+            // form.submit(); 
+            alert('Form submitted successfully! \n\nData is ready to be sent to the server.');
+            // Optional: Reset form
+            // form.reset();
+            // document.querySelectorAll('.success').forEach(el => el.classList.remove('success'));
+        } else {
+            alert('Please fix the errors above.');
+        }
+    });
+</script>
+
+</body>
+</html>
