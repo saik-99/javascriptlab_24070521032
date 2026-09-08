@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Checker with Advanced JS Concepts</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { margin-top: 0; }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #e2e3e5; color: #383d41; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Palindrome Checker</h1>
+    <p>Enter a string to check if it reads the same forwards and backwards.</p>
+    
+    <div class="input-group">
+        <input type="text" id="userInput" placeholder="e.g., racecar" />
+        <button id="checkBtn">Check</button>
+    </div>
+
+    <div id="result"></div>
+</div>
+
+<!-- 
+    Note: Browsers run JavaScript, not TypeScript directly. 
+    In a real project, you would compile the TS below to JS. 
+    For this demo, I am writing the code as valid modern JavaScript 
+    that strictly follows the TypeScript typing patterns you requested.
+-->
+<script>
+    /**
+     * 1. FUNCTION TYPES
+     * In JavaScript, we define types via JSDoc or TypeScript interfaces.
+     * Here we define a type for our callback function.
+     * @typedef {(input: string) => string} NormalizerFunc
+     */
+
+    // 2. CLOSURE
+    // We create a closure to maintain a cache (memoization) for normalized strings.
+    // The 'cache' variable is private to this IIFE (Immediately Invoked Function Expression)
+    // but accessible to the 'normalize' function returned.
+    const createNormalizer = () => {
+        const cache = new Map(); // Private scope
+
+        return (input) => {
+            if (cache.has(input)) {
+                console.log("Retrieving from closure cache...");
+                return cache.get(input);
+            }
+
+            // Logic to normalize: lowercase and remove non-alphanumeric
+            const normalized = input.toLowerCase().replace(/[^a-z0-9]/g, '');
+            cache.set(input, normalized);
+            return normalized;
+        };
+    };
+
+    // Initialize the closure
+    const normalizeString = createNormalizer();
+
+    class PalindromeChecker {
+        constructor() {
+            // 3. SCOPE
+            // 'this.normalizer' is instance scope.
+            this.normalizer = normalizeString;
+        }
+
+        /**
+         * Checks if a string is a palindrome.
+         * @param {string} input 
+         * @returns {boolean}
+         */
+        check(input) {
+            // 4. TRY-CATCH
+            try {
+                // Validate input type
+                if (typeof input !== 'string') {
+                    throw new TypeError("Input must be a string.");
+                }
+
+                if (input.length === 0) {
+                    throw new Error("Input cannot be empty.");
+                }
+
+                // Use the closure to get normalized string
+                const cleanStr = this.normalizer(input);
+
+                // 5. SCOPE (Block Scope)
+                // 'left' and 'right' are scoped to the loop logic if using let
+                let left = 0;
+                let right = cleanStr.length - 1;
+
+                while (left < right) {
+                    if (cleanStr[left] !== cleanStr[right]) {
+                        return false;
+                    }
+                    left++;
+                    right--;
+                }
+
+                return true;
+
+            } catch (error) {
+                // Handle errors gracefully
+                console.error("Validation Error:", error.message);
+                throw error; // Re-throw to be caught by the UI handler
+            }
+        }
+    }
+
+    // --- UI Interaction ---
+    const checkBtn = document.getElementById('checkBtn');
+    const userInput = document.getElementById('userInput');
+    const resultDiv = document.getElementById('result');
+
+    checkBtn.addEventListener('click', () => {
+        const text = userInput.value;
+        const checker = new PalindromeChecker();
+
+        resultDiv.style.display = 'none';
+        resultDiv.className = '';
+
+        try {
+            const isPalindrome = checker.check(text);
+            
+            resultDiv.style.display = 'block';
+            if (isPalindrome) {
+                resultDiv.textContent = `"${text}" is a palindrome!`;
+                resultDiv.classList.add('success');
+            } else {
+                resultDiv.textContent = `"${text}" is NOT a palindrome.`;
+                resultDiv.classList.add('info');
+            }
+        } catch (err) {
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = `Error: ${err.message}`;
+            resultDiv.classList.add('error');
+        }
+    });
+
+    // Allow pressing Enter
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkBtn.click();
+    });
+</script>
+
+</body>
+</html>
