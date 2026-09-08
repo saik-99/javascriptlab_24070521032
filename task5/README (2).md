@@ -1,7 +1,7 @@
 # Experiment No. 5
 
-**Student Name:** Ishika Dubey
-**PRN:** 24070521023
+**Student Name:** sai konde
+**PRN:** 24070521032
 
 ---
 
@@ -175,7 +175,7 @@ Demonstrate JavaScript array methods â€” `forEach`, `map`, `filter`, `reduce` â€
 ### Screenshot
 
 > **Screenshot:**
-> ![alt text](image-2.png)
+
 
 ---
 
@@ -322,8 +322,7 @@ function findMaxMin() {
 
 ### Screenshot
 
-> **Screenshot:**
-> <img width="1917" height="1015" alt="image" src="paste-your-github-image-url-here" />
+
 
 ---
 
