@@ -1,7 +1,7 @@
 # Experiment No. 4
 
-**Student Name:** Ishika Dubey
-**PRN:** 24070521023
+**Student Name:** sai konde
+**PRN:** 24070521032
 **File Path:** `PRACTICAL4/Task4.a/index.html` | `PRACTICAL4/Task4.a/script.js` | `PRACTICAL4/Task 4.b/index.html` | `PRACTICAL4/Task 4.b/script.js`
 
 ---
@@ -105,8 +105,7 @@ function checkPalindrome() {
 - Result displayed: `"racecar" is a Palindrome! ✅` or `"hello" is NOT a Palindrome ❌`.
 - If input is empty, a `try-catch` block catches the thrown Error and shows an alert.
 
-> **Screenshot:**
-> <img width="1917" height="1015" alt="image" src="https://github.com/user-attachments/assets/539e7206-cd4f-48f1-9bb3-605bac68d2dc" />
+
 
 ---
 
@@ -129,7 +128,7 @@ Vehicle Registration Number Validation Webpage using Functions, Scope, and Try-C
 <body>
   <div class="card">
     <div class="top">
-      <p class="tag">Task 4.b — Ishika Dubey · 24070521023</p>
+      <p class="tag">Task 4.b —sai konde 24070521032</p>
       <h1>Vehicle<br>Registration</h1>
       <p class="desc">Enter your 10-character registration number below</p>
     </div>
@@ -265,8 +264,7 @@ document.getElementById("regInput").addEventListener("keydown", function (e) {
   - The button changes to ✓ Valid or ✗ Error message.
 - Format: `[2 state letters][2 district digits][2 series letters][4 vehicle digits]` — e.g., `MH12AB1234`.
 
-> **Screenshot:**
-> <img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/26eb110b-699b-44da-b154-3cd3cc12a759" />
+
 
 ---
 
