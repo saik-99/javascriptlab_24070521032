@@ -1,7 +1,7 @@
 # Experiment No. 7
 
-**Student Name:** Ishika Dubey
-**PRN:** 24070521023
+**Student Name:** Sai konde
+**PRN:** 24070521032
 
 ---
 
@@ -35,7 +35,7 @@ Demonstrate JavaScript DOM event handling by building an interactive To-Do List 
 
 <head>
     <title>To Do List</title>
-    <h1>Ishika Dubey 24070521023 </h1>
+    <h1>sai konde24070521032 </h1>
 
     <style>
         body {
@@ -175,7 +175,6 @@ Demonstrate JavaScript DOM event handling by building an interactive To-Do List 
 ### Screenshot
 
 > **Screenshot:**
-> ![Task 7.1 Output](7.1/image.png)
 
 ---
 
@@ -437,7 +436,7 @@ Build a Registration Form that validates all fields using JavaScript event handl
 ### Screenshot
 
 > **Screenshot:**
-> ![Task 7.2 Output](7.2/image.png)
+
 
 ---
 
