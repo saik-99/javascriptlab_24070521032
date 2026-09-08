@@ -1,7 +1,7 @@
 # Experiment No. 2
 
-**Student Name:** Ishika Dubey
-**PRN:** 24070521023
+**Student Name:** sai konde
+**PRN:** 24070521032
 **File Path:** `PRACTICAL2/index.html` | `PRACTICAL2/script.js` | `PRACTICAL2/style.css`
 
 ---
@@ -32,7 +32,7 @@ Demonstration of var, let, const, Template Literals, Destructuring and Billing C
 
   <div class="topbar">
     <h2>&#128722; ShopZone</h2>
-    <p>Made by Ishika Dubey | 24070521023</p>
+    <p>Made by sai konde 24070521032</p>
   </div>
 
   <h2 class="page-heading">Our Products</h2>
@@ -194,8 +194,7 @@ function generateBill() {
   - **Subtotal**, **GST (18%)**, and **Grand Total**
 - Console logs all billing details.
 
-> **Screenshot:**
-> <img width="1917" height="957" alt="image" src="https://github.com/user-attachments/assets/a2c90dbb-5d91-497b-874a-58d6ed7765a9" />
+
 
 ---
 
@@ -216,7 +215,7 @@ Billing Calculator Webpage for a Shopping App using JavaScript, HTML, and CSS
 - Customer details (Name, Phone, Address) are accepted.
 - Quantities per product are selected.
 - On **Generate Bill**: GST calculated at 18%, Grand Total displayed in a formatted invoice.
-<img width="1920" height="1695" alt="image" src="https://github.com/user-attachments/assets/e4e78708-4452-41cd-9936-273c1b034c51" />
+
 
 ---
 
