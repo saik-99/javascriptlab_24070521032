@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gym Admission Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; padding: 40px; }
+    form { background: #fff; padding: 25px; border-radius: 8px; width: 340px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .field { margin-bottom: 15px; }
+    label { display: block; font-size: 14px; margin-bottom: 4px; }
+    input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    input:focus, select:focus { outline: none; border-color: orange; }
+    .error { color: red; font-size: 12px; min-height: 16px; display: block; }
+    .valid { border-color: green !important; }
+    .invalid { border-color: red !important; }
+    button { width: 100%; padding: 10px; background: #222; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:disabled { background: #999; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<form id="gymForm" novalidate>
+  <h2>Gym Admission</h2>
+
+  <div class="field">
+    <label for="name">Full Name</label>
+    <input type="text" id="name" placeholder="e.g. John Doe">
+    <span class="error" id="nameErr"></span>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="you@example.com">
+    <span class="error" id="emailErr"></span>
+  </div>
+
+  <div class="field">
+    <label for="age">Age (16–70)</label>
+    <input type="number" id="age" placeholder="e.g. 25">
+    <span class="error" id="ageErr"></span>
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone (10 digits)</label>
+    <input type="tel" id="phone" placeholder="9876543210">
+    <span class="error" id="phoneErr"></span>
+  </div>
+
+  <div class="field">
+    <label for="plan">Membership Plan</label>
+    <select id="plan">
+      <option value="">-- Select a plan --</option>
+      <option value="basic">Basic – $20/mo</option>
+      <option value="standard">Standard – $35/mo</option>
+      <option value="premium">Premium – $60/mo</option>
+    </select>
+    <span class="error" id="planErr"></span>
+  </div>
+
+  <button type="submit" id="submitBtn">Submit</button>
+</form>
+
+<script>
+  const form  = document.getElementById('gymForm');
+  const btn   = document.getElementById('submitBtn');
+
+  // Validation rules per field: returns error message or '' if valid
+  const rules = {
+    name:  v => v.trim().length >= 3 ? '' : 'Name must be at least 3 letters',
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Enter a valid email',
+    age:   v => (v !== '' && v >= 16 && v <= 70) ? '' : 'Age must be between 16 and 70',
+    phone: v => /^\d{10}$/.test(v) ? '' : 'Phone must be exactly 10 digits',
+    plan:  v => v !== '' ? '' : 'Please select a plan'
+  };
+
+  // Check one field and update its UI
+  function validate(id) {
+    const input = document.getElementById(id);
+    const msg   = rules[id](input.value);
+    document.getElementById(id + 'Err').textContent = msg;
+    input.classList.toggle('valid', msg === '');
+    input.classList.toggle('invalid', msg !== '');
+    return msg === '';
+  }
+
+  // Enable/disable submit based on overall validity
+  function checkForm() {
+    const allValid = Object.keys(rules).every(id => rules[id](document.getElementById(id).value) === '');
+    btn.disabled = !allValid;
+  }
+
+  // Attach LIVE events to each field
+  Object.keys(rules).forEach(id => {
+    const input = document.getElementById(id);
+    const evt   = input.tagName === 'SELECT' ? 'change' : 'input';
+
+    input.addEventListener(evt, () => { validate(id); checkForm(); }); // live check
+    input.addEventListener('blur', () => validate(id));               // check on leave
+  });
+
+  // Final submit
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const allValid = Object.keys(rules).every(id => validate(id));
+    if (allValid) alert('Admission submitted successfully!');
+  });
+
+  checkForm(); // start with button disabled
+</script>
+
+</body>
+</html>
