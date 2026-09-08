@@ -1,7 +1,7 @@
 # Experiment No. 6
 
-**Student Name:** Ishika Dubey
-**PRN:** 24070521023
+**Student Name:** sai konde
+**PRN:** 24070521032
 
 ---
 
@@ -184,7 +184,7 @@ Demonstrate JavaScript string methods (`split`, `match`, `replace`, `indexOf`, `
 ### Screenshot
 
 > **Screenshot:**
-> ![Task 6.1 Output](6.1/image.png)
+
 
 ---
 
@@ -260,7 +260,7 @@ Use JavaScript Regular Expressions to extract structured student information (Na
             <label for="inputText">Student Data</label>
             <textarea id="inputText">Student Name: Ishika Dubey
 Roll Number: 23
-Email Address: ishika.dubey@gmail.com
+Email Address: saikonde03@gmail.com
 Phone Number: 9876543210
 Department: Computer Science</textarea>
 
@@ -358,7 +358,7 @@ Department: Computer Science</textarea>
 ### Screenshot
 
 > **Screenshot:**
-> ![Task 6.2 Output](6.2/image.png)
+
 
 ---
 
