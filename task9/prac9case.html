@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study: Timetable Management with Local & Session Storage</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #f97316;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 28px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .student-badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: 9999px;
+            font-size: 14px;
+        }
+
+        .storage-explainer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .storage-explainer { grid-template-columns: 1fr; }
+        }
+
+        .explainer-box {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            font-size: 13.5px;
+        }
+
+        .explainer-box.session {
+            border-left-color: var(--secondary);
+        }
+
+        .explainer-box h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-pill {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .pill-local { background: var(--primary); }
+        .pill-session { background: var(--secondary); }
+
+        .day-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 4px;
+        }
+
+        .day-tab-btn {
+            padding: 10px 22px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .day-tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .day-tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 992px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .slots-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slot-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 6px solid var(--primary);
+            background: #f8fafc;
+            border-top: 1px solid #edf2f7;
+            border-right: 1px solid #edf2f7;
+            border-bottom: 1px solid #edf2f7;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .slot-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+        }
+
+        .slot-card.attended {
+            opacity: 0.65;
+            background: #f1f5f9;
+            text-decoration: line-through;
+        }
+
+        .slot-time {
+            width: 130px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 13px;
+        }
+
+        .slot-info {
+            flex-grow: 1;
+            padding: 0 16px;
+        }
+
+        .slot-subject {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .slot-meta {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .slot-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attendance-checkbox {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-delete-slot {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-delete-slot:hover {
+            background: #fee2e2;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 11px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 6px;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-reset {
+            padding: 6px 12px;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .storage-inspector {
+            margin-top: 24px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .inspector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .inspector-grid { grid-template-columns: 1fr; }
+        }
+
+        .inspector-box {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .session-log-list {
+            list-style: none;
+            max-height: 180px;
+            overflow-y: auto;
+            margin-top: 10px;
+            font-size: 12.5px;
+        }
+
+        .session-log-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .session-log-list li span.time {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-right: 6px;
+        }
+
+        .draft-alert {
+            font-size: 12px;
+            color: var(--secondary);
+            font-weight: 500;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-title">
+            <h1>Academic Timetable Planner</h1>
+            <p>Case Study: Practical Application of LocalStorage & SessionStorage</p>
+        </div>
+        <div class="student-badge">
+            <strong>Sai Konde</strong> | PRN: 24070521032
+        </div>
+    </header>
+
+    <!-- Architecture & Storage Roles Banner -->
+    <div class="storage-explainer">
+        <div class="explainer-box">
+            <h3><span class="badge-pill pill-local">LocalStorage</span> Persistent Data</h3>
+            <p>Stores the complete weekly timetable schedule and subject definitions permanently. Persists across browser closing and computer restarts.</p>
+        </div>
+        <div class="explainer-box session">
+            <h3><span class="badge-pill pill-session">SessionStorage</span> Transient Session State</h3>
+            <p>Remembers your current active day tab, input form auto-save drafts, daily attendance checks, and live audit logs for this browsing tab.</p>
+        </div>
+    </div>
+
+    <!-- Day Navigation Tabs (State stored in sessionStorage) -->
+    <div class="day-tabs" id="dayTabs">
+        <button class="day-tab-btn" onclick="selectDay('Monday')">Monday</button>
+        <button class="day-tab-btn" onclick="selectDay('Tuesday')">Tuesday</button>
+        <button class="day-tab-btn" onclick="selectDay('Wednesday')">Wednesday</button>
+        <button class="day-tab-btn" onclick="selectDay('Thursday')">Thursday</button>
+        <button class="day-tab-btn" onclick="selectDay('Friday')">Friday</button>
+        <button class="day-tab-btn" onclick="selectDay('Saturday')">Saturday</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-layout">
+        <!-- Timetable Slots View -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2 id="currentDayTitle">Monday Schedule</h2>
+                    <span style="font-size: 12px; color: var(--text-muted);">Check checkbox to mark class attendance for this session.</span>
+                </div>
+                <button class="btn-reset" onclick="resetDefaultTimetable()">Reset to Defaults</button>
+            </div>
+
+            <div class="slots-list" id="slotsContainer">
+                <!-- Slots will render dynamically -->
+            </div>
+        </div>
+
+        <!-- Sidebar: Add Class & Session Tools -->
+        <div>
+            <!-- Add Slot Form -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-header">
+                    <h2>Add New Class</h2>
+                    <span class="badge-pill pill-local">Saves to Local</span>
+                </div>
+                <form id="addClassForm" onsubmit="addClass(event)">
+                    <div class="form-group">
+                        <label for="slotTime">Time Range</label>
+                        <input type="text" id="slotTime" placeholder="e.g. 09:00 AM - 10:00 AM" required oninput="saveFormDraft()">
+                    </div>
+                    <div class="form-group">
+                        <label for="slotSubject">Subject Name</label>
+                        <input type="text" id="slotSubject" placeholder="e.g. JavaScript Lab" required oninput="saveFormDraft()">
+                    </div>
+                    <div class="form-group">
+                        <label for="slotRoom">Room / Lab No.</label>
+                        <input type="text" id="slotRoom" placeholder="e.g. Lab 304" required oninput="saveFormDraft()">
+                    </div>
+                    <div class="form-group">
+                        <label for="slotFaculty">Faculty Name</label>
+                        <input type="text" id="slotFaculty" placeholder="e.g. Prof. Sharma" required oninput="saveFormDraft()">
+                    </div>
+                    <div class="form-group">
+                        <label for="slotColor">Tag Color</label>
+                        <select id="slotColor" onchange="saveFormDraft()">
+                            <option value="#3b82f6">Blue (Theory)</option>
+                            <option value="#10b981">Green (Laboratory)</option>
+                            <option value="#f97316">Orange (Tutorial)</option>
+                            <option value="#8b5cf6">Purple (Seminar)</option>
+                        </select>
+                    </div>
+                    <div id="draftNotice" class="draft-alert">Draft auto-saved to sessionStorage</div>
+                    <button type="submit" class="btn-submit">+ Add to Timetable</button>
+                </form>
+            </div>
+
+            <!-- Session Activity Log -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Session Activity</h2>
+                    <span class="badge-pill pill-session">sessionStorage</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted);">Real-time action trail for the current tab session:</p>
+                <ul class="session-log-list" id="sessionLogList">
+                    <li><span class="time">--:--</span> Session started</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Storage Inspector Component -->
+    <div class="storage-inspector">
+        <div class="card-header">
+            <h2>Live Storage Inspector</h2>
+            <div>
+                <button class="btn-reset" onclick="clearSessionOnly()">Clear Session Only</button>
+                <button class="btn-reset" style="color: var(--danger); border-color: #fca5a5;" onclick="clearAllStorage()">Wipe All Storage</button>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+            Raw view of real browser storage entries driving this timetable application:
+        </p>
+        <div class="inspector-grid">
+            <div>
+                <h3 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">LocalStorage (Persistent Schedule)</h3>
+                <div class="inspector-box" id="rawLocalStorage">{ loading... }</div>
+            </div>
+            <div>
+                <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 6px;">SessionStorage (Active Tab, Draft & Log)</h3>
+                <div class="inspector-box" id="rawSessionStorage">{ loading... }</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Default Academic Timetable
+    const defaultSchedule = {
+        "Monday": [
+            { id: 1, time: "09:00 AM - 10:00 AM", subject: "JavaScript & Modern Web Tech", room: "Room 101", faculty: "Dr. Rao", color: "#3b82f6" },
+            { id: 2, time: "10:15 AM - 11:15 AM", subject: "Database Management Systems", room: "Room 102", faculty: "Prof. Verma", color: "#8b5cf6" },
+            { id: 3, time: "11:30 AM - 01:30 PM", subject: "Full Stack Lab Practical", room: "Lab 204", faculty: "Prof. Joshi", color: "#10b981" }
+        ],
+        "Tuesday": [
+            { id: 4, time: "09:00 AM - 10:00 AM", subject: "Computer Networks", room: "Room 103", faculty: "Dr. Kulkarni", color: "#3b82f6" },
+            { id: 5, time: "10:15 AM - 12:15 PM", subject: "Software Engineering Tutorial", room: "Room 105", faculty: "Prof. Nair", color: "#f97316" }
+        ],
+        "Wednesday": [
+            { id: 6, time: "09:00 AM - 10:00 AM", subject: "JavaScript Lab - Storage API", room: "Lab 301", faculty: "Prof. Sai", color: "#10b981" },
+            { id: 7, time: "10:30 AM - 11:30 AM", subject: "Operating Systems", room: "Room 101", faculty: "Dr. Patil", color: "#3b82f6" }
+        ],
+        "Thursday": [
+            { id: 8, time: "09:00 AM - 11:00 AM", subject: "Algorithms & Problem Solving", room: "Lab 102", faculty: "Prof. Deshmukh", color: "#10b981" },
+            { id: 9, time: "11:30 AM - 12:30 PM", subject: "Cyber Security Basics", room: "Room 201", faculty: "Prof. Mehta", color: "#8b5cf6" }
+        ],
+        "Friday": [
+            { id: 10, time: "09:00 AM - 10:00 AM", subject: "Cloud Computing", room: "Room 203", faculty: "Dr. Sengupta", color: "#3b82f6" },
+            { id: 11, time: "10:15 AM - 12:15 PM", subject: "Project Review & Seminar", room: "Auditorium", faculty: "Faculty Committee", color: "#f97316" }
+        ],
+        "Saturday": [
+            { id: 12, time: "10:00 AM - 12:00 PM", subject: "Competitive Coding Practice", room: "Lab 401", faculty: "Coding Club", color: "#10b981" }
+        ]
+    };
+
+    let activeDay = "Monday";
+
+    // Initialize App
+    function initApp() {
+        // 1. Check or initialize LocalStorage schedule
+        if (!localStorage.getItem("timetable_schedule")) {
+            localStorage.setItem("timetable_schedule", JSON.stringify(defaultSchedule));
+            logSessionActivity("Loaded default weekly schedule into LocalStorage");
+        }
+
+        // 2. Check SessionStorage for active day tab (maintains view across refresh)
+        const savedDay = sessionStorage.getItem("timetable_active_day");
+        if (savedDay && defaultSchedule[savedDay]) {
+            activeDay = savedDay;
+        } else {
+            activeDay = "Monday";
+            sessionStorage.setItem("timetable_active_day", activeDay);
+        }
+
+        // 3. Restore any unsaved form draft from SessionStorage
+        restoreFormDraft();
+
+        // 4. Render UI
+        renderTabs();
+        renderSchedule();
+        renderSessionLogs();
+        updateStorageInspector();
+    }
+
+    // Tab Selection
+    function selectDay(day) {
+        activeDay = day;
+        // Save to sessionStorage (state persists only for current session)
+        sessionStorage.setItem("timetable_active_day", day);
+        logSessionActivity(`Switched tab to ${day}`);
+        renderTabs();
+        renderSchedule();
+        updateStorageInspector();
+    }
+
+    function renderTabs() {
+        const buttons = document.querySelectorAll(".day-tab-btn");
+        buttons.forEach(btn => {
+            if (btn.innerText.trim() === activeDay) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+        document.getElementById("currentDayTitle").innerText = `${activeDay} Schedule`;
+    }
+
+    // Schedule Rendering
+    function getScheduleData() {
+        try {
+            return JSON.parse(localStorage.getItem("timetable_schedule")) || defaultSchedule;
+        } catch (e) {
+            return defaultSchedule;
+        }
+    }
+
+    function getSessionAttendance() {
+        try {
+            return JSON.parse(sessionStorage.getItem("timetable_session_attendance")) || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function renderSchedule() {
+        const container = document.getElementById("slotsContainer");
+        const schedule = getScheduleData();
+        const attendance = getSessionAttendance();
+        const slots = schedule[activeDay] || [];
+
+        container.innerHTML = "";
+
+        if (slots.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    <p style="font-size: 16px; font-weight: 600;">No classes scheduled for ${activeDay}.</p>
+                    <p style="font-size: 13px; margin-top: 4px;">Use the form to add a lecture.</p>
+                </div>
+            `;
+            return;
+        }
+
+        slots.forEach(slot => {
+            const isAttended = !!attendance[slot.id];
+            const div = document.createElement("div");
+            div.className = `slot-card ${isAttended ? 'attended' : ''}`;
+            div.style.borderLeftColor = slot.color || "var(--primary)";
+
+            div.innerHTML = `
+                <div class="slot-time">${escapeHtml(slot.time)}</div>
+                <div class="slot-info">
+                    <div class="slot-subject">${escapeHtml(slot.subject)}</div>
+                    <div class="slot-meta">
+                        <span>📍 ${escapeHtml(slot.room)}</span>
+                        <span>👤 ${escapeHtml(slot.faculty)}</span>
+                    </div>
+                </div>
+                <div class="slot-actions">
+                    <label style="display:flex; align-items:center; gap:6px; font-size:12px; text-transform:none; cursor:pointer;" title="Mark attendance for today's session">
+                        <input type="checkbox" class="attendance-checkbox" ${isAttended ? 'checked' : ''} onchange="toggleAttendance(${slot.id})">
+                        <span>Attended</span>
+                    </label>
+                    <button class="btn-delete-slot" onclick="deleteSlot(${slot.id})" title="Delete class">✕</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // Toggle Attendance (Stored in sessionStorage)
+    function toggleAttendance(slotId) {
+        const attendance = getSessionAttendance();
+        if (attendance[slotId]) {
+            delete attendance[slotId];
+            logSessionActivity(`Unmarked class #${slotId} attendance`);
+        } else {
+            attendance[slotId] = true;
+            logSessionActivity(`Marked class #${slotId} attendance`);
+        }
+        sessionStorage.setItem("timetable_session_attendance", JSON.stringify(attendance));
+        renderSchedule();
+        updateStorageInspector();
+    }
+
+    // Add New Class to LocalStorage
+    function addClass(event) {
+        event.preventDefault();
+        const time = document.getElementById("slotTime").value.trim();
+        const subject = document.getElementById("slotSubject").value.trim();
+        const room = document.getElementById("slotRoom").value.trim();
+        const faculty = document.getElementById("slotFaculty").value.trim();
+        const color = document.getElementById("slotColor").value;
+
+        const schedule = getScheduleData();
+        if (!schedule[activeDay]) schedule[activeDay] = [];
+
+        const newSlot = {
+            id: Date.now(),
+            time,
+            subject,
+            room,
+            faculty,
+            color
+        };
+
+        schedule[activeDay].push(newSlot);
+        localStorage.setItem("timetable_schedule", JSON.stringify(schedule));
+
+        // Clear draft from SessionStorage
+        sessionStorage.removeItem("timetable_form_draft");
+        document.getElementById("addClassForm").reset();
+        document.getElementById("draftNotice").style.display = "none";
+
+        logSessionActivity(`Added "${subject}" on ${activeDay}`);
+        renderSchedule();
+        updateStorageInspector();
+    }
+
+    // Delete Slot from LocalStorage
+    function deleteSlot(slotId) {
+        if (!confirm("Are you sure you want to remove this class?")) return;
+        const schedule = getScheduleData();
+        if (schedule[activeDay]) {
+            schedule[activeDay] = schedule[activeDay].filter(s => s.id !== slotId);
+            localStorage.setItem("timetable_schedule", JSON.stringify(schedule));
+            logSessionActivity(`Deleted class #${slotId} from ${activeDay}`);
+            renderSchedule();
+            updateStorageInspector();
+        }
+    }
+
+    // Auto-Save Form Draft in SessionStorage
+    function saveFormDraft() {
+        const draft = {
+            time: document.getElementById("slotTime").value,
+            subject: document.getElementById("slotSubject").value,
+            room: document.getElementById("slotRoom").value,
+            faculty: document.getElementById("slotFaculty").value,
+            color: document.getElementById("slotColor").value
+        };
+        sessionStorage.setItem("timetable_form_draft", JSON.stringify(draft));
+        const notice = document.getElementById("draftNotice");
+        notice.style.display = "block";
+        updateStorageInspector();
+    }
+
+    function restoreFormDraft() {
+        const draftJson = sessionStorage.getItem("timetable_form_draft");
+        if (draftJson) {
+            try {
+                const draft = JSON.parse(draftJson);
+                if (draft.time) document.getElementById("slotTime").value = draft.time;
+                if (draft.subject) document.getElementById("slotSubject").value = draft.subject;
+                if (draft.room) document.getElementById("slotRoom").value = draft.room;
+                if (draft.faculty) document.getElementById("slotFaculty").value = draft.faculty;
+                if (draft.color) document.getElementById("slotColor").value = draft.color;
+                document.getElementById("draftNotice").style.display = "block";
+            } catch (e) {}
+        }
+    }
+
+    // Reset default timetable
+    function resetDefaultTimetable() {
+        if (confirm("Reset entire weekly schedule to default timetable?")) {
+            localStorage.setItem("timetable_schedule", JSON.stringify(defaultSchedule));
+            logSessionActivity("Restored default weekly timetable");
+            renderSchedule();
+            updateStorageInspector();
+        }
+    }
+
+    // Session Activity Logger (SessionStorage)
+    function logSessionActivity(actionText) {
+        let logs = [];
+        try {
+            logs = JSON.parse(sessionStorage.getItem("timetable_session_log")) || [];
+        } catch (e) { logs = []; }
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        logs.unshift({ time: timeStr, text: actionText });
+
+        if (logs.length > 20) logs.pop(); // Keep last 20
+        sessionStorage.setItem("timetable_session_log", JSON.stringify(logs));
+        renderSessionLogs();
+    }
+
+    function renderSessionLogs() {
+        const list = document.getElementById("sessionLogList");
+        let logs = [];
+        try {
+            logs = JSON.parse(sessionStorage.getItem("timetable_session_log")) || [];
+        } catch (e) { logs = []; }
+
+        if (logs.length === 0) {
+            list.innerHTML = '<li><span class="time">--:--</span> Tab session started</li>';
+            return;
+        }
+
+        list.innerHTML = logs.map(l => `<li><span class="time">${escapeHtml(l.time)}</span> ${escapeHtml(l.text)}</li>`).join("");
+    }
+
+    // Clear Session Only
+    function clearSessionOnly() {
+        sessionStorage.clear();
+        alert("SessionStorage cleared. Active tab resets to Monday, drafts and session logs wiped.");
+        initApp();
+    }
+
+    // Wipe All
+    function clearAllStorage() {
+        if (confirm("Wipe both LocalStorage AND SessionStorage? All timetable customizations will be lost.")) {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert("All storage cleared.");
+            initApp();
+        }
+    }
+
+    // Live Storage Inspector
+    function updateStorageInspector() {
+        // Format LocalStorage
+        const localObj = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            try {
+                localObj[k] = JSON.parse(localStorage.getItem(k));
+            } catch (e) {
+                localObj[k] = localStorage.getItem(k);
+            }
+        }
+        document.getElementById("rawLocalStorage").innerText = JSON.stringify(localObj, null, 2);
+
+        // Format SessionStorage
+        const sessionObj = {};
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const k = sessionStorage.key(i);
+            try {
+                sessionObj[k] = JSON.parse(sessionStorage.getItem(k));
+            } catch (e) {
+                sessionObj[k] = sessionStorage.getItem(k);
+            }
+        }
+        document.getElementById("rawSessionStorage").innerText = JSON.stringify(sessionObj, null, 2);
+    }
+
+    function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    window.onload = initApp;
+</script>
+
+</body>
+</html>

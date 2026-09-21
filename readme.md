@@ -32,7 +32,8 @@ javascriptlab_24070521032/ ├── README.md ├── Lab_1/ │ ├── in
 | 5 | Objects & OOP | Object literals, prototypes, classes, inheritance |
 | 6 | DOM Manipulation | Selecting elements, event listeners, dynamic content |
 | 7 | ES6+ Features | Destructuring, spread/rest, template literals, modules |
-| 8 | Async JavaScript | Promises, async/await, fetch API, callbacks |
+| 8 | Form Validation & Events | Live validation, form events, and visual feedback |
+| 9 | Web Storage API | Local Storage, Session Storage, and Timetable Case Study |
 
 > ⚠️ *Update topics to match your actual lab assignments.* 
 
