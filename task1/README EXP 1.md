@@ -163,6 +163,8 @@ function greet() {
   - A student details table is dynamically generated (Internal JS).
   - Browser console shows output from: `console.log`, `console.info`, `console.warn`, `console.error`, `console.table`, `console.time`.
 
+### Screenshot
+![Task 1 Output](screenshot_task1.png)
 
 ---
 

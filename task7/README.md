@@ -174,7 +174,7 @@ Demonstrate JavaScript DOM event handling by building an interactive To-Do List 
 
 ### Screenshot
 
-> **Screenshot:**
+![Task 7.1 Output](screenshot_task7.png)
 
 ---
 
@@ -435,7 +435,7 @@ Build a Registration Form that validates all fields using JavaScript event handl
 
 ### Screenshot
 
-> **Screenshot:**
+![Task 7.2 Output](screenshot_task7_2.png)
 
 
 ---

@@ -194,7 +194,8 @@ function generateBill() {
   - **Subtotal**, **GST (18%)**, and **Grand Total**
 - Console logs all billing details.
 
-
+### Screenshot
+![Task 2 Output](screenshot_task2.png)
 
 ---
 

@@ -183,7 +183,7 @@ Demonstrate JavaScript string methods (`split`, `match`, `replace`, `indexOf`, `
 
 ### Screenshot
 
-> **Screenshot:**
+![Task 6.1 Output](screenshot_task6.png)
 
 
 ---
@@ -357,7 +357,7 @@ Department: Computer Science</textarea>
 
 ### Screenshot
 
-> **Screenshot:**
+![Task 6.2 Output](screenshot_task6_2.png)
 
 
 ---
