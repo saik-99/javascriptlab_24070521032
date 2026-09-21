@@ -22,6 +22,7 @@
 
 <form id="gymForm" novalidate>
   <h2>Gym Admission</h2>
+  <p style="text-align:center; font-size:13px; color:#666; margin-bottom:12px;">Sai Konde &bull; 24070521032</p>
 
   <div class="field">
     <label for="name">Full Name</label>
