@@ -95,7 +95,8 @@ function calculateGrade() {
 - Validation alerts fire if Name is empty, Marks field is empty, or value is out of range.
 
 ### Screenshot
-![Task 3.a Output](screenshot_task3.png)
+![Task 3.a Output](screenshot_task3.png)<img width="340" height="185" alt="Screenshot 2026-09-22 134145" src="https://github.com/user-attachments/assets/f35a4a38-c652-4912-a268-35d143ee7bd9" />
+
 
 
 ---
@@ -288,7 +289,8 @@ window.onload = function () {
   - On revisit: Previously saved record is auto-loaded.
 
 ### Screenshot
-![Task 3.b Output](screenshot_task3_2.png)
+![Task 3.b Output](screenshot_task3_2.png)<img width="424" height="346" alt="Screenshot 2026-09-22 134229" src="https://github.com/user-attachments/assets/27190f14-e797-4e03-a8cd-5116a3a35a88" />
+
 
 
 ---
