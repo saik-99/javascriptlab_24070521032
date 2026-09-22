@@ -651,7 +651,8 @@ let data = sessionStorage.getItem('key');
 - Live reactive tables listing keys and values stored in the browser.
 
 ### Screenshot
-![Task 9.1 Output](screenshot_task9.png)
+![Task 9.1 Output](screenshot_task9.png)![Uploading Screenshot 2026-09-22 135513.png…]()
+
 
 ---
 
