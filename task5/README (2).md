@@ -174,7 +174,8 @@ Demonstrate JavaScript array methods â€” `forEach`, `map`, `filter`, `reduce` â€
 
 ### Screenshot
 
-![Task 5.1 Output](screenshot_task5.png)
+![Task 5.1 Output](screenshot_task5.png)<img width="919" height="505" alt="Screenshot 2026-09-22 134455" src="https://github.com/user-attachments/assets/75c38c22-ab7a-46bc-8054-0b482c080251" />
+
 
 
 ---
@@ -322,7 +323,8 @@ function findMaxMin() {
 
 ### Screenshot
 
-![Task 5.2 Output](screenshot_task5_2.png)
+![Task 5.2 Output](screenshot_task5_2.png)<img width="612" height="428" alt="Screenshot 2026-09-22 134525" src="https://github.com/user-attachments/assets/a95561c4-67e1-4ad6-a6da-93a27636dec4" />
+
 
 
 ---
