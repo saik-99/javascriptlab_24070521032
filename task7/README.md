@@ -174,7 +174,9 @@ Demonstrate JavaScript DOM event handling by building an interactive To-Do List 
 
 ### Screenshot
 
-![Task 7.1 Output](screenshot_task7.png)
+![Task 7.1 Output](screenshot_task7.png)<img width="484" height="583" alt="Screenshot 2026-09-22 134936" src="https://github.com/user-attachments/assets/939b71a7-77ef-4726-9683-b05a7516a93b" />
+<img width="654" height="494" alt="Screenshot 2026-09-22 134907" src="https://github.com/user-attachments/assets/1f8d94f7-64fb-4a88-9820-b21c5bdf6b6f" />
+
 
 ---
 
@@ -435,7 +437,8 @@ Build a Registration Form that validates all fields using JavaScript event handl
 
 ### Screenshot
 
-![Task 7.2 Output](screenshot_task7_2.png)
+![Task 7.2 Output](screenshot_task7_2.png)<img width="484" height="583" alt="Screenshot 2026-09-22 134936" src="https://github.com/user-attachments/assets/6b99abbc-33ff-4bb0-a11e-f660a2d7b4c5" />
+
 
 
 ---
