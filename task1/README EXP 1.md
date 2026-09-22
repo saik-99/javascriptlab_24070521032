@@ -1,5 +1,4 @@
 <img width="664" height="256" alt="Screenshot 2026-09-22 133723" src="https://github.com/user-attachments/assets/3f8cc58e-138a-4933-b2fc-67639774bf84" />
-<img width="664" height="256" alt="Screenshot 2026-09-22 133723" src="https://github.com/user-attachments/assets/1039a3ff-3f34-4d61-bfcd-b5831898c789" />
 # Experiment No. 1
 
 **Student Name:** sai konde
