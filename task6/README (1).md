@@ -183,7 +183,8 @@ Demonstrate JavaScript string methods (`split`, `match`, `replace`, `indexOf`, `
 
 ### Screenshot
 
-![Task 6.1 Output](screenshot_task6.png)
+![Task 6.1 Output](screenshot_task6.png)<img width="926" height="486" alt="Screenshot 2026-09-22 134650" src="https://github.com/user-attachments/assets/9103a361-302d-47be-ad77-e3167f7a08e5" />
+
 
 
 ---
@@ -357,7 +358,8 @@ Department: Computer Science</textarea>
 
 ### Screenshot
 
-![Task 6.2 Output](screenshot_task6_2.png)
+![Task 6.2 Output](screenshot_task6_2.png)<img width="808" height="774" alt="Screenshot 2026-09-22 134715" src="https://github.com/user-attachments/assets/e6e441ef-5bc5-4d92-9d3f-56cd3df9ac46" />
+
 
 
 ---
