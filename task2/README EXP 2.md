@@ -195,7 +195,8 @@ function generateBill() {
 - Console logs all billing details.
 
 ### Screenshot
-![Task 2 Output](screenshot_task2.png)
+![Task 2 Output](screenshot_task2.png)<img width="459" height="575" alt="Screenshot 2026-09-22 134011" src="https://github.com/user-attachments/assets/8228a856-7997-4a55-8db4-a8db96f90bfb" />
+
 
 ---
 
