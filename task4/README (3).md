@@ -106,7 +106,8 @@ function checkPalindrome() {
 - If input is empty, a `try-catch` block catches the thrown Error and shows an alert.
 
 ### Screenshot
-![Task 4.a Output](screenshot_task4.png)
+![Task 4.a Output](screenshot_task4.png)<img width="403" height="314" alt="Screenshot 2026-09-22 134343" src="https://github.com/user-attachments/assets/33b6b4dc-e8c0-4c0f-839c-c87dc93038ac" />
+
 
 
 ---
@@ -267,7 +268,8 @@ document.getElementById("regInput").addEventListener("keydown", function (e) {
 - Format: `[2 state letters][2 district digits][2 series letters][4 vehicle digits]` — e.g., `MH12AB1234`.
 
 ### Screenshot
-![Task 4.b Output](screenshot_task4_2.png)
+![Task 4.b Output](screenshot_task4_2.png)<img width="344" height="377" alt="Screenshot 2026-09-22 134410" src="https://github.com/user-attachments/assets/38e1241a-fc0c-4190-b74c-5eb842fb0025" />
+
 
 
 ---
