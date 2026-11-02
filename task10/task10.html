@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer</title>
+    <title>Dynamic Data Table</title>
     <style>
         * {
             margin: 0;
@@ -14,320 +13,505 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            color: #fff;
+            padding: 40px;
+            background: #f0f2f5;
+            color: #333;
         }
 
         .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px 60px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         h1 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .timer-display {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .time-unit {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px 25px;
-            border-radius: 12px;
-            min-width: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .time-value {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #00d4ff;
-        }
-
-        .time-label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 5px;
-            opacity: 0.7;
-        }
-
-        .input-section {
-            margin-bottom: 20px;
-        }
-
-        .input-section label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .time-inputs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .time-inputs input {
-            width: 70px;
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
             text-align: center;
-            font-size: 1rem;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            color: #1a1a2e;
         }
 
-        .time-inputs input:focus {
-            outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 0.95rem;
         }
 
-        .time-inputs input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .buttons {
+        /* Controls */
+        .controls {
             display: flex;
             gap: 15px;
-            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #0099cc;
+            box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
         }
 
         button {
-            padding: 12px 30px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: 600;
         }
 
-        .btn-start {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
+        .btn-fetch {
+            background: linear-gradient(135deg, #0099cc, #0077aa);
             color: #fff;
         }
 
-        .btn-start:hover {
+        .btn-fetch:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 153, 204, 0.3);
         }
 
-        .btn-pause {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
-            color: #fff;
-        }
-
-        .btn-pause:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-        }
-
-        .btn-reset {
+        .btn-refresh {
             background: linear-gradient(135deg, #6c757d, #5a6268);
             color: #fff;
         }
 
-        .btn-reset:hover {
+        .btn-refresh:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.4);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
         }
 
-        button:disabled {
+        /* Status message */
+        .status {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        th .sort-arrow {
+            margin-left: 5px;
+            font-size: 0.7rem;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background: #f0f2f5;
+        }
+
+        /* Badge for status */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 8px 14px;
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .pagination button:hover {
+            background: #e9ecef;
+        }
+
+        .pagination button.active {
+            background: #0099cc;
+            color: #fff;
+            border-color: #0099cc;
+        }
+
+        .pagination button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
-        .finished {
-            animation: pulse 1s infinite;
+        .page-info {
+            margin-top: 10px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .message {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            color: #00d4ff;
-            min-height: 30px;
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 20px; }
+            th, td { padding: 10px 12px; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⏱ Countdown Timer</h1>
+        <h1>📊 User Data Dashboard</h1>
+        <p class="subtitle">Fetching & displaying data dynamically from a REST API</p>
 
-        <div class="input-section">
-            <label>Set Timer (hours, minutes, seconds):</label>
-            <div class="time-inputs">
-                <input type="number" id="hours" placeholder="00" min="0" max="99">
-                <input type="number" id="minutes" placeholder="00" min="0" max="59">
-                <input type="number" id="seconds" placeholder="00" min="0" max="59">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search by name or email...">
+            </div>
+            <div class="btn-group">
+                <button class="btn-fetch" id="fetchBtn">📥 Fetch Data</button>
+                <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
             </div>
         </div>
 
-        <div class="timer-display">
-            <div class="time-unit">
-                <div class="time-value" id="display-hours">00</div>
-                <div class="time-label">Hours</div>
-            </div>
-            <div class="time-unit">
-                <div class="time-value" id="display-minutes">00</div>
-                <div class="time-label">Minutes</div>
-            </div>
-            <div class="time-unit">
-                <div class="time-value" id="display-seconds">00</div>
-                <div class="time-label">Seconds</div>
-            </div>
+        <div id="status" class="status" style="display: none;"></div>
+
+        <div class="table-wrapper">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('id')">ID <span class="sort-arrow"></span></th>
+                        <th onclick="sortTable('name')">Name <span class="sort-arrow"></span></th>
+                        <th onclick="sortTable('email')">Email <span class="sort-arrow"></span></th>
+                        <th onclick="sortTable('phone')">Phone <span class="sort-arrow"></span></th>
+                        <th onclick="sortTable('company')">Company <span class="sort-arrow"></span></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999; padding: 40px;">
+                            Click "Fetch Data" to load records
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="buttons">
-            <button class="btn-start" id="startBtn">Start</button>
-            <button class="btn-pause" id="pauseBtn" disabled>Pause</button>
-            <button class="btn-reset" id="resetBtn">Reset</button>
-        </div>
-
-        <div class="message" id="message"></div>
+        <div class="pagination" id="pagination"></div>
+        <div class="page-info" id="pageInfo"></div>
     </div>
 
     <script>
-        let countdownInterval = null;
-        let totalSeconds = 0;
-        let isRunning = false;
+        // API Configuration
+        const API_URL = 'https://jsonplaceholder.typicode.com/users';
+        const ITEMS_PER_PAGE = 5;
 
-        const hoursInput = document.getElementById('hours');
-        const minutesInput = document.getElementById('minutes');
-        const secondsInput = document.getElementById('seconds');
-        const displayHours = document.getElementById('display-hours');
-        const displayMinutes = document.getElementById('display-minutes');
-        const displaySeconds = document.getElementById('display-seconds');
-        const startBtn = document.getElementById('startBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const message = document.getElementById('message');
+        // State
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        let sortColumn = 'id';
+        let sortDirection = 'asc';
 
-        function updateDisplay() {
-            const h = Math.floor(totalSeconds / 3600);
-            const m = Math.floor((totalSeconds % 3600) / 60);
-            const s = totalSeconds % 60;
+        // DOM Elements
+        const tableBody = document.getElementById('tableBody');
+        const statusEl = document.getElementById('status');
+        const searchInput = document.getElementById('searchInput');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const paginationEl = document.getElementById('pagination');
+        const pageInfoEl = document.getElementById('pageInfo');
 
-            displayHours.textContent = String(h).padStart(2, '0');
-            displayMinutes.textContent = String(m).padStart(2, '0');
-            displaySeconds.textContent = String(s).padStart(2, '0');
+        // Show status message
+        function showStatus(message, type) {
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
         }
 
-        function startTimer() {
-            if (isRunning) return;
+        // Fetch data from API
+        async function fetchData() {
+            showStatus('⏳ Fetching data from server...', 'loading');
+            fetchBtn.disabled = true;
 
-            // Get input values only on first start
-            if (totalSeconds === 0) {
-                const h = parseInt(hoursInput.value) || 0;
-                const m = parseInt(minutesInput.value) || 0;
-                const s = parseInt(secondsInput.value) || 0;
-                totalSeconds = h * 3600 + m * 60 + s;
+            try {
+                const response = await fetch(API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                allData = await response.json();
+                filteredData = [...allData];
+                currentPage = 1;
+
+                showStatus(`✅ Successfully loaded ${allData.length} records!`, 'success');
+                applySorting();
+                renderTable();
+                renderPagination();
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #721c24; padding: 40px;">
+                            Failed to load data. Please try again.
+                        </td>
+                    </tr>
+                `;
+            } finally {
+                fetchBtn.disabled = false;
+            }
+        }
+
+        // Apply search filter
+        function applyFilter() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (!query) {
+                filteredData = [...allData];
+            } else {
+                filteredData = allData.filter(user =>
+                    user.name.toLowerCase().includes(query) ||
+                    user.email.toLowerCase().includes(query)
+                );
             }
 
-            if (totalSeconds <= 0) {
-                message.textContent = '⚠ Please set a time first!';
+            currentPage = 1;
+            applySorting();
+            renderTable();
+            renderPagination();
+        }
+
+        // Sort data
+        function applySorting() {
+            filteredData.sort((a, b) => {
+                let valA = a[sortColumn] || '';
+                let valB = b[sortColumn] || '';
+
+                // Handle nested company name
+                if (sortColumn === 'company') {
+                    valA = a.company?.name || '';
+                    valB = b.company?.name || '';
+                }
+
+                // Convert to string for comparison
+                valA = String(valA).toLowerCase();
+                valB = String(valB).toLowerCase();
+
+                if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // Sort table by column
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            applySorting();
+            renderTable();
+            renderPagination();
+            updateSortArrows();
+        }
+
+        // Update sort arrow indicators
+        function updateSortArrows() {
+            document.querySelectorAll('th .sort-arrow').forEach((arrow, index) => {
+                const columns = ['id', 'name', 'email', 'phone', 'company'];
+                if (columns[index] === sortColumn) {
+                    arrow.textContent = sortDirection === 'asc' ? '▲' : '▼';
+                } else {
+                    arrow.textContent = '';
+                }
+            });
+        }
+
+        // Render table rows
+        function renderTable() {
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999; padding: 40px;">
+                            No records found
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
-            isRunning = true;
-            message.textContent = '';
-            startBtn.disabled = true;
-            pauseBtn.disabled = false;
-            hoursInput.disabled = true;
-            minutesInput.disabled = true;
-            secondsInput.disabled = true;
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const pageData = filteredData.slice(start, end);
 
-            updateDisplay();
-
-            countdownInterval = setInterval(() => {
-                totalSeconds--;
-                updateDisplay();
-
-                if (totalSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                    isRunning = false;
-                    startBtn.disabled = false;
-                    pauseBtn.disabled = true;
-                    hoursInput.disabled = false;
-                    minutesInput.disabled = false;
-                    secondsInput.disabled = false;
-                    message.textContent = '🎉 Time\'s up!';
-                    displayHours.parentElement.classList.add('finished');
-                    displayMinutes.parentElement.classList.add('finished');
-                    displaySeconds.parentElement.classList.add('finished');
-                }
-            }, 1000);
+            tableBody.innerHTML = pageData.map(user => `
+                <tr>
+                    <td><strong>#${user.id}</strong></td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.company.name}</td>
+                </tr>
+            `).join('');
         }
 
-        function pauseTimer() {
-            if (!isRunning) return;
+        // Render pagination controls
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
 
-            clearInterval(countdownInterval);
-            isRunning = false;
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            message.textContent = '⏸ Timer paused';
+            if (totalPages <= 1) {
+                paginationEl.innerHTML = '';
+                pageInfoEl.textContent = filteredData.length > 0
+                    ? `Showing ${filteredData.length} record`
+                    : 'No records';
+                return;
+            }
+
+            let html = '';
+
+            // Previous button
+            html += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">◀ Prev</button>`;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            // Next button
+            html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next ▶</button>`;
+
+            paginationEl.innerHTML = html;
+
+            // Page info
+            const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+            const end = Math.min(currentPage * ITEMS_PER_PAGE, filteredData.length);
+            pageInfoEl.textContent = `Showing ${start}-${end} of ${filteredData.length} records`;
         }
 
-        function resetTimer() {
-            clearInterval(countdownInterval);
-            isRunning = false;
-            totalSeconds = 0;
+        // Navigate to a specific page
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+            if (page < 1 || page > totalPages) return;
 
-            updateDisplay();
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            hoursInput.disabled = false;
-            minutesInput.disabled = false;
-            secondsInput.disabled = false;
-            message.textContent = '';
-
-            document.querySelectorAll('.finished').forEach(el => {
-                el.classList.remove('finished');
-            });
+            currentPage = page;
+            renderTable();
+            renderPagination();
         }
 
-        startBtn.addEventListener('click', startTimer);
-        pauseBtn.addEventListener('click', pauseTimer);
-        resetBtn.addEventListener('click', resetTimer);
+        // Event Listeners
+        fetchBtn.addEventListener('click', fetchData);
+        refreshBtn.addEventListener('click', fetchData);
+        searchInput.addEventListener('input', applyFilter);
 
-        // Allow Enter key to start
-        [hoursInput, minutesInput, secondsInput].forEach(input => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') startTimer();
-            });
-        });
-
-        // Initialize display
-        updateDisplay();
+        // Initial fetch on page load
+        fetchData();
     </script>
 </body>
 </html>
